@@ -1,0 +1,95 @@
+image: debian:9
+pipelines:
+  default:
+    - step:
+        name: check
+        script:
+          - apt update -y && apt install -y cmake clang clang-tidy git make cppcheck
+            
+          - cmake -DCMAKE_C_COMPILER=/usr/lib/llvm-3.8/libexec/ccc-analyzer -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_DEBUG="-Wall -Wextra -pedantic -std=c99 -D__linux__" -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .
+            
+          - mkdir reports
+            
+          - cppcheck --enable=all --project=compile_commands.json 1>/dev/null 2>reports/cppcheck
+          - find  -name '*.[ch]' | xargs clang-tidy  -checks=-clang-diagnostic-unused-parameter  1>reports/clang-tidy
+          - scan-build -o reports make -j $(cat /proc/cpuinfo | grep processor | wc -l) > /dev/null
+            
+          - cat reports/cppcheck
+          - cat reports/clang-tidy
+
+    - step:
+        name: build-x86_64-linux
+        script:
+          - echo "Skip"
+          - apt update -y && apt install -y ninja-build cmake git gcc g++ 
+
+          - mkdir build
+          - cd build
+          - cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -std=c99" ..
+          - ninja
+          - ninja test
+
+    - step:
+        name: build-x86_64-linux-memsan
+        script:
+          - echo "Skip"
+          - apt update -y && apt install -y ninja-build cmake git gcc g++ 
+
+          - mkdir build
+          - cd build
+          - cmake -G "Ninja" -DCMAKE_C_FLAGS="-g -O0 -fsanitize=leak -fsanitize=address" ..
+          - ninja
+          - ninja test
+
+    - step:
+        name: build-x86_64-linux-coverage
+        script:
+          - echo "Skip"
+          - apt update -y && apt install -y ninja-build cmake git gcc g++ gcovr curl
+
+          - mkdir build
+          - cd build
+          - cmake -G "Ninja" -DTEKON_TESTS_COVERAGE=1 ..
+          - ninja
+          - ninja test
+          - ../test/suite_msr.sh $(pwd)
+          - ../test/suite_arch.sh $(pwd)
+          - ../test/suite_sync.sh $(pwd)
+          - gcov $(find -name '*gcno')
+          - gcovr -r $(pwd)/.. --exclude-directories test --exclude-directories tekon/test --exclude-directories utils/test -s
+          - |
+            [ -z "${CODECOV_TOKEN}" ] && echo "codecove disabled" || bash <(curl -s https://codecov.io/bash)
+
+    - step:
+        name: build-armhf-linux
+        script:
+          - apt update -y && apt install -y ninja-build cmake git gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
+
+          - mkdir build 
+          - cd build
+          - cmake -G "Ninja" -DCMAKE_C_COMPILER=arm-linux-gnueabihf-gcc -DCMAKE_FIND_ROOT_PATH=/usr/arm-linux-gnueabihf -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG  -Wall -Wextra -Wno-unused-parameter -std=c99" -DCMAKE_FIND_ROOT_PATH=/tmp/output ..
+          - ninja
+
+    - step:
+        name: build-x86_64-mingw
+        script:
+          - apt update && apt install -y ninja-build cmake git gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 build-essential autoconf automake  libtool
+            
+          - mkdir build 
+          - cd build
+          - cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc -DCMAKE_LINKER=/usr/x86_64-w64-mingw32/bin/ld  -DCMAKE_C_STANDARD_LIBRARIES="-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lws2_32 -liphlpapi -lpsapi -luserenv" -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG  -Wall -Wextra -Wno-unused-parameter -std=c99 -DWINVER=0x0501" -DCMAKE_EXE_LINKER_FLAGS="-Wl,-Bstatic -lwinpthread" ..
+          - ninja
+
+    - step:
+        name: build-i686-mingw
+        script:
+          - apt update && apt install -y ninja-build cmake git gcc-mingw-w64-i686 g++-mingw-w64-i686 build-essential autoconf automake  libtool
+            
+          - mkdir build 
+          - cd build
+          - cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_C_COMPILER=i686-w64-mingw32-gcc -DCMAKE_LINKER=/usr/i686-w64-mingw32/bin/ld  -DCMAKE_C_STANDARD_LIBRARIES="-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lws2_32 -liphlpapi -lpsapi -luserenv" -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG  -Wall -Wextra -Wno-unused-parameter -std=c99 -DWINVER=0x0501" -DCMAKE_EXE_LINKER_FLAGS="-Wl,-Bstatic -lwinpthread" ..
+          - ninja
+
+options:
+  docker: true
+

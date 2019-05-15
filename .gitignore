@@ -1,0 +1,11 @@
+*.cmake
+*.ninja
+*.orig
+*.gcov
+*.gcno
+*.gcda
+*.user
+tags
+GPATH
+GRTAGS
+GTAGS
