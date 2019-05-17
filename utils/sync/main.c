@@ -11,6 +11,7 @@ extern "C" {
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <signal.h>
 #include <getopt.h>
 #include <inttypes.h>
 
@@ -22,8 +23,6 @@ extern "C" {
 #define APP_ERR  LOG_ERR  APP_NAME " : ERR"
 #define APP_WARN LOG_WARN APP_NAME " : WARN"
 #define APP_INFO LOG_WARN APP_NAME " : INFO"
-#define APP_MAX_DIFF 60*1000
-#define APP_DEF_DIFF 20*1000
 
 struct app {
     struct netaddr netcfg;
@@ -289,7 +288,7 @@ static int sync(struct app * app)
         return 0;
     }
 
-    log_print(APP_INFO " : device UTC %ld\n", time_utc_from_local(&devtime));
+    log_print(APP_INFO " : device UTC %"PRIi64"\n", time_utc_from_local(&devtime));
     log_print(APP_INFO " : device time %d-%02d-%02d %02d:%02d:%02d\n",
               devtime.tm_year + 1900,
               devtime.tm_mon + 1,
@@ -298,7 +297,7 @@ static int sync(struct app * app)
               devtime.tm_min,
               devtime.tm_sec);
 
-    log_print(APP_INFO " : new UTC %ld\n", app->newtime);
+    log_print(APP_INFO " : new UTC %"PRIi64"\n", app->newtime);
     log_print(APP_INFO " : new time %d-%02d-%02d %02d:%02d:%02d\n",
               newtime.tm_year + 1900,
               newtime.tm_mon + 1,
@@ -436,11 +435,18 @@ static int read_args(struct app * app, int argc, char * const argv[])
     return 1;
 }
 
+static void sigint(int sig)
+{
+    log_print(APP_INFO " : stop\n");
+}
 
 int main(int argc, char * argv[])
 {
     struct app app;
+
     init(&app);
+
+    signal(SIGINT, sigint);
 
     if(!read_args(&app, argc, argv)) {
         usage();

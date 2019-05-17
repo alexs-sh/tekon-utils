@@ -36,11 +36,11 @@ x86_64-linux:
   script:
     - sed -i 's/deb.debian.org/mirror.yandex.ru/' /etc/apt/sources.list
     - sed -i 's/security.debian.org/mirror.yandex.ru/' /etc/apt/sources.list
-    - apt update -y && apt install -y ninja-build cmake git gcc g++
+    - apt update -y && apt install -y ninja-build cmake git gcc
 
     - mkdir build
     - cd build
-    - cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -std=c99" -DCMAKE_FIND_ROOT_PATH=/tmp/output ..
+    - cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -std=c99" ..
     - ninja
     - ninja test 
   tags:
@@ -52,7 +52,7 @@ x86_64-linux-memsan:
   script:
     - sed -i 's/deb.debian.org/mirror.yandex.ru/' /etc/apt/sources.list
     - sed -i 's/security.debian.org/mirror.yandex.ru/' /etc/apt/sources.list
-    - apt update -y && apt install -y ninja-build cmake git gcc g++
+    - apt update -y && apt install -y ninja-build cmake git gcc
 
     - mkdir build
     - cd build
@@ -62,17 +62,33 @@ x86_64-linux-memsan:
   tags:
     - docker
 
+x86_64-linux-valgrind:
+  image: debian:9
+  stage: build
+  script:
+    - sed -i 's/deb.debian.org/mirror.yandex.ru/' /etc/apt/sources.list
+    - sed -i 's/security.debian.org/mirror.yandex.ru/' /etc/apt/sources.list
+    - apt update -y && apt install -y ninja-build cmake git gcc valgrind
+
+    - mkdir build
+    - cd build
+    - cmake -G "Ninja" -DCMAKE_C_FLAGS="-g -O0" ..
+    - ninja
+    - find -executable -type f -name 'unit_*' -exec valgrind '{}' \;
+  tags:
+    - docker
+
 x86_64-linux-coverage:
   image: debian:9
   stage: build
   script:
     - sed -i 's/deb.debian.org/mirror.yandex.ru/' /etc/apt/sources.list
     - sed -i 's/security.debian.org/mirror.yandex.ru/' /etc/apt/sources.list
-    - apt update -y && apt install -y ninja-build cmake git gcc g++ gcovr
+    - apt update -y && apt install -y ninja-build cmake git gcc gcovr
 
     - mkdir build
     - cd build
-    - cmake -G "Ninja" -DTEKON_TESTS_COVERAGE=1 -DCMAKE_FIND_ROOT_PATH=/tmp/output ..
+    - cmake -G "Ninja" -DTEKON_TESTS_COVERAGE=1 ..
     - ninja
     - ninja test
     - ../test/suite_msr.sh $(pwd)
@@ -89,12 +105,14 @@ armhf-linux:
   script:
     - sed -i 's/deb.debian.org/mirror.yandex.ru/' /etc/apt/sources.list
     - sed -i 's/security.debian.org/mirror.yandex.ru/' /etc/apt/sources.list
-    - apt update -y && apt install -y ninja-build cmake git gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
+    - apt update -y && apt install -y ninja-build cmake git gcc-arm-linux-gnueabihf qemu
 
     - mkdir build
     - cd build
-    - cmake -G "Ninja" -DCMAKE_C_COMPILER=arm-linux-gnueabihf-gcc -DCMAKE_FIND_ROOT_PATH=/usr/arm-linux-gnueabihf -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG  -Wall -Wextra -Wno-unused-parameter -std=c99" -DCMAKE_FIND_ROOT_PATH=/tmp/output ..
+    - cmake -G "Ninja" -DCMAKE_C_COMPILER=arm-linux-gnueabihf-gcc -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG  -Wall -Wextra -Wno-unused-parameter -std=c99" ..
     - ninja
+    
+    - find -executable -type f -name 'unit_*' -exec qemu-arm -L /usr/arm-linux-gnueabihf '{}' \;
 
   tags:
     - docker
@@ -105,12 +123,16 @@ x86_64-mingw:
   script:
     - sed -i 's/deb.debian.org/mirror.yandex.ru/' /etc/apt/sources.list
     - sed -i 's/security.debian.org/mirror.yandex.ru/' /etc/apt/sources.list
-    - apt update && apt install -y ninja-build cmake  git gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 build-essential autoconf automake  libtool
+    - apt update && apt install -y ninja-build cmake  git gcc-mingw-w64-x86-64 build-essential autoconf automake  libtool wine
 
     - mkdir build 
     - cd build
     - cmake -G "Ninja" -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc -DCMAKE_LINKER=/usr/x86_64-w64-mingw32/bin/ld  -DCMAKE_C_STANDARD_LIBRARIES="-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lws2_32 -liphlpapi -lpsapi -luserenv" -DCMAKE_EXE_LINKER_FLAGS="-Wl,-Bstatic -lwinpthread" .. 
     - ninja
 
+    - find -executable -type f -name 'unit_*' -exec wine '{}' \;
+
   tags:
     - docker
+
+

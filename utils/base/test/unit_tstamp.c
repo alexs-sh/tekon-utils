@@ -66,6 +66,7 @@ MU_TEST(test_month_cv)
     struct tekon_date date = {.year = 18, .month = 10, .day = 1};
 
     struct tm dt;
+    memset(&dt, 0, sizeof(dt));
 
     dt.tm_year = date.year + 100; //tm_year: год - 1900
     dt.tm_mon = date.month - 2;   //tm_mon [0,11] + начало архива на 1 месяц раньше
@@ -144,6 +145,7 @@ MU_TEST(test_day_cv)
     struct tekon_date date = {.year = 18, .month = 5, .day = 9};
 
     struct tm dt;
+    memset(&dt, 0, sizeof(dt));
 
     dt.tm_year = date.year + 100; //tm_year: год - 1900
     dt.tm_mon = date.month - 1;   //tm_mon [0,11]
@@ -236,6 +238,7 @@ MU_TEST(test_hour_cv)
     struct tekon_time time = {.hour = 15, .minute = 0, .second = 0};
 
     struct tm dt;
+    memset(&dt, 0, sizeof(dt));
 
     dt.tm_year = date.year + 100; //tm_year: год - 1900
     dt.tm_mon = date.month - 1;   //tm_mon [0,11]
@@ -290,6 +293,7 @@ MU_TEST(test_interval_cv)
     struct tekon_time time = {.hour = 15, .minute = 45, .second = 0};
 
     struct tm dt;
+    memset(&dt, 0, sizeof(dt));
 
     dt.tm_year = date.year + 100; //tm_year: год - 1900
     dt.tm_mon = date.month - 1;   //tm_mon [0,11]

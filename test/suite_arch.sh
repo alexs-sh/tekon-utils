@@ -24,13 +24,13 @@ test_output()
   
   # Проверка кол-ва слов
   WD=$(wc -w ${OUT} | cut -f 1 -d' ')
-  EXPECT=84
+  EXPECT=72
   if [ "$WD" -ne "$EXPECT" ]; then
     fail "Invalid output. Got ${WD} words insted of ${EXPECT}"
   fi
   # Проверка по шаблону строки
-  PAT='2:3:0x801c F 0.000000 COM -1'
-  grep "${PAT}" /tmp/out > /dev/null && echo "Done" || fail "Invalid output. Can't find ${PAT}"
+  PAT='2:3:0x801c:([0-9])+ F 0.000000 COM'
+  grep -E "${PAT}" /tmp/out > /dev/null && echo "Done" || fail "Invalid output. Can't find ${PAT}"
 }
 
 echo "<-- ARCHIVE TEST SUITE -->"

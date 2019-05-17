@@ -11,6 +11,7 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h>
 #include <inttypes.h>
 #include <getopt.h>
 
@@ -21,6 +22,7 @@ extern "C" {
 #define APP_NAME "tekon_arch"
 #define APP_ERR  LOG_ERR  APP_NAME " : ERR"
 #define APP_WARN LOG_WARN APP_NAME " : WARN"
+#define APP_INFO LOG_INFO APP_NAME " : INFO"
 
 struct app {
 
@@ -52,7 +54,7 @@ static void usage()
     printf("            F - 32-bit float\n");
     printf("            U - 32-bit unsigned integer\n");
     printf("            H - 32-bit unsigned integer (HEX)\n");
-    printf("            B - boolean\n\n");
+    printf("            B - boolean\n");
     printf("            R - raw\n\n");
     printf("  -d    date/time addresses in [device:dateaddr:timeaddr] format.\n\n");
     printf("  -i    interval description in [type:depth:interval] format.\n");
@@ -464,12 +466,17 @@ static void print(struct rec * self, void * data )
 
     // Добавить адрес параметра
     result = addr->hex ?
-             snprintf(ptr, remain, "0x%x ", addr->address) :
-             snprintf(ptr, remain, "%"PRIu16" ", addr->address);
+             snprintf(ptr, remain, "0x%x:", addr->address) :
+             snprintf(ptr, remain, "%"PRIu16":", addr->address);
     assert(result > 0);
     ptr += result;
     remain -= result;
 
+    // Добавить индекс параметра
+    result = snprintf(ptr, remain, "%"PRIu16" ", self->index);
+    assert(result > 0);
+    ptr += result;
+    remain -= result;
 
     // Добавить тип и значение
     switch(app->archive.address.type) {
@@ -525,15 +532,14 @@ static void print(struct rec * self, void * data )
     // Добавить сдвиг часового пояса
     result = snprintf(ptr, remain, "%"PRIi32" ", app->tzoffset);
     assert(result>0);
-    ptr += result;
-    remain -= result;
-
-    // Добавить индекс
-    result = snprintf(ptr, remain, "%" PRIu16,self->index);
-    assert(result > 0);
 
     // Вывести
     printf("%s\n", buffer);
+}
+
+static void sigint(int sig)
+{
+    log_print(APP_INFO " : stop\n");
 }
 
 int main(int argc, char * argv[])
@@ -542,6 +548,8 @@ int main(int argc, char * argv[])
     struct app app;
 
     init(&app);
+
+    signal(SIGINT, sigint);
 
     //прочитать аргменты командной строки
     if(!read_args(&app, argc, argv)) {

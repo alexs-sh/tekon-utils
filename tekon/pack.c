@@ -10,7 +10,6 @@ extern "C" {
 #include "tekon/pack.h"
 #include <assert.h>
 #include <string.h>
-#include <errno.h>
 
 struct buffer_writer {
     size_t avail;

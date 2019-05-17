@@ -124,7 +124,7 @@ int checks_from_string(struct checks * self, const char * str)
     if(arglen == buflen)
         return 0;
 
-    strncpy(buffer, str, buflen);
+    strncpy(buffer, str, buflen - 1);
     char * ptr = buffer;
 
     struct checks result;
@@ -138,16 +138,18 @@ int checks_from_string(struct checks * self, const char * str)
             else
                 break;
         } else if(strncmp(token, "difference", 10) == 0) {
-            strtok_r(token, ":", &saveptr);
-            result.diff = atoi(saveptr);
+            char * value = NULL;
+            strtok_r(token, ":", &value);
+            result.diff = atoi(value);
 
             if(result.diff <= 0)
                 return 0;
 
             result.avail |= TIME_CHECK_DIFF;
         } else if(strncmp(token, "minutes", 7) == 0) {
-            strtok_r(token, ":", &saveptr);
-            result.minutes = atoi(saveptr);
+            char * value = NULL;
+            strtok_r(token, ":", &value);
+            result.minutes = atoi(value);
 
             if(result.minutes <= 0)
                 return 0;
@@ -184,7 +186,7 @@ int checks_run(struct checks * self, const struct tm * newtime, const struct tm 
         if(result != 0) {
             self->fail |= TIME_CHECK_DIFF;
             snprintf(self->message, sizeof(self->message),
-                     "Difference check failed");
+                     "difference check failed");
             return 0;
         }
     }
@@ -193,7 +195,7 @@ int checks_run(struct checks * self, const struct tm * newtime, const struct tm 
         if(result != 0) {
             self->fail |= TIME_CHECK_MINUTES;
             snprintf(self->message, sizeof(self->message),
-                     "Minutes check failed");
+                     "minutes check failed");
             return 0;
         }
     }
@@ -202,7 +204,7 @@ int checks_run(struct checks * self, const struct tm * newtime, const struct tm 
         if(result != 0) {
             self->fail |= TIME_CHECK_INDEX;
             snprintf(self->message, sizeof(self->message),
-                     "Indexes check failed");
+                     "indexes check failed");
             return 0;
         }
     }

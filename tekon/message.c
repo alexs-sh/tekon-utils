@@ -9,7 +9,6 @@ extern "C" {
 
 #include "tekon/message.h"
 #include <assert.h>
-#include <errno.h>
 #include <string.h>
 
 int tekon_req_11(struct message * self, uint8_t gateway, uint8_t device, uint16_t address)

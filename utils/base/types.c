@@ -89,15 +89,13 @@ int netaddr_from_string(struct netaddr * self, const char * str)
     // прочитать IP
     ptr = string_next(ptr);
     for(cnt = 0; cnt < iplen && !string_is_term(ptr) && *ptr != ':'; cnt++, ptr++) {
-        buffer[cnt] = *ptr;
+        result.ip[cnt] = *ptr;
     }
 
-    buffer[cnt] = '\0';
+    result.ip[cnt] = '\0';
 
-    if(!validate_ip(buffer))
+    if(!validate_ip(result.ip))
         return 0;
-
-    strncpy(result.ip, buffer, cnt);
 
     // прочитать порт
     ptr = string_next(ptr);
