@@ -17,8 +17,8 @@ int64_t time_now_utc()
 
 int64_t time_now_local()
 {
-    // Логика похожа на NIX-ову версию. Но...В винде сдвиг часового пояса считается
-    // в минутах и между UTC и лок. временем
+    /* Логика похожа на NIX-ову версию. Но...В винде сдвиг часового пояса считается
+     * в минутах и между UTC и лок. временем */
     time_t utc = time(NULL);
     struct _timeb tb;
 
@@ -36,7 +36,7 @@ int32_t time_tzoffset()
 int time_local_from_utc(int64_t utc, struct tm * local)
 {
     assert(local);
-    const time_t tutc = utc; //для корректной работы в 32-х битных системах
+    const time_t tutc = utc; /* для корректной работы в 32-х битных системах */
     struct tm * ptm = localtime(&tutc);
     if(ptm)
         *local = *ptm;

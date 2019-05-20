@@ -14,8 +14,8 @@ extern "C" {
 #include "tekon/proto.h"
 #include "utils/base/types.h"
 
-// Макс. кол-вол измерений, которое может быть запрошено
-// за один сеанс.
+/* Макс. кол-вол измерений, которое может быть запрошено
+ * за один сеанс. */
 #define MEASURMENT_MAX_TABLE_SIZE 1024
 
 struct msr {

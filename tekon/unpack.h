@@ -13,9 +13,9 @@ extern "C" {
 #include <sys/types.h>
 #include "tekon/message.h"
 
-// Записть сообщение в буфер
-// В случае успеха возврщает кол-во прочитанных байт
-// 0 - ошибка
+/* Записть сообщение в буфер
+ * В случае успеха возврщает кол-во прочитанных байт
+ * 0 - ошибка */
 ssize_t tekon_resp_unpack(const void * buffer, size_t size, struct message * message, enum tekon_message_type type, uint8_t * number);
 
 

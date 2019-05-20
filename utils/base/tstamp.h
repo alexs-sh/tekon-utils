@@ -44,19 +44,19 @@ struct timestamp_seq {
     size_t count;
 };
 
-// Месячная последовательность.
-// size - 12 или 48
+/* Месячная последовательность.
+ * size - 12 или 48 */
 int timestamp_seq_month(struct timestamp_seq * self, const struct tekon_date * date, size_t depth);
 
-// Суточная последовательность
+/* Суточная последовательность */
 int timestamp_seq_day(struct timestamp_seq * self, const struct tekon_date * date);
 
-// Часовая последовательность
-// size : 384 (16 дней), 764 (32 дня), 1536 (64 дня)
+/* Часовая последовательность
+ * size : 384 (16 дней), 764 (32 дня), 1536 (64 дня) */
 int timestamp_seq_hour(struct timestamp_seq * self, const struct tekon_date * date, const struct tekon_time * time, size_t depth);
 
-// Интервальная последовательность
-// interval - минуты
+/* Интервальная последовательность
+ * interval - минуты */
 int timestamp_seq_interval(struct timestamp_seq * self, const struct tekon_date * date, const struct tekon_time * time, size_t depth, size_t interval);
 
 void timestamp_seq_init(struct timestamp_seq * self);

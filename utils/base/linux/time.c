@@ -17,8 +17,8 @@ int64_t time_now_utc()
 
 int64_t time_now_local()
 {
-    // Логика простая. Получаем вермя в UTC. Прибавляем сдвиг часового пояса в
-    // секундах.
+    /* Логика простая. Получаем вермя в UTC. Прибавляем сдвиг часового пояса в
+     * секундах. */
     time_t utc = time(NULL);
     struct tm ldt;
 
@@ -37,7 +37,7 @@ int32_t time_tzoffset()
 int time_local_from_utc(int64_t utc, struct tm * local)
 {
     assert(local);
-    const time_t tutc = utc; //для корректной работы в 32-х битных системах
+    const time_t tutc = utc; /*для корректной работы в 32-х битных системах*/
     return localtime_r(&tutc, local) != NULL;
 }
 

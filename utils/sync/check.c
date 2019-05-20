@@ -56,8 +56,8 @@ static int check_indexes(const struct tm * newtime, const struct tm * devtime)
     assert(newtime);
     assert(devtime);
 
-    //Последовательно проверяем индексы и убеждаемся, что они не будут сдвинуты
-    //при перестановке времени
+    /*Последовательно проверяем индексы и убеждаемся, что они не будут сдвинуты
+     *при перестановке времени */
     struct tekon_date devd;
     struct tekon_time devt;
 

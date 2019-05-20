@@ -18,12 +18,11 @@ struct buffer_reader {
 
 static void buffer_reader_init(struct buffer_reader * self, const void * buffer, size_t size);
 
-// Запись значений в буфер.
-// 1 - успешно
-// 0 - ошибка
+/* Запись значений в буфер.
+ * 1 - успешно
+ * 0 - ошибка */
 static int buffer_reader_u8(struct buffer_reader * self, uint8_t * u8);
 static int buffer_reader_u32(struct buffer_reader * self, uint32_t * u32);
-//static int buffer_reader_u16(struct buffer_reader * self, uint16_t * u16);
 
 static ssize_t unpack_readem_11(const void * buffer, size_t size, struct message * message);
 static ssize_t unpack_readem_14(const void * buffer, size_t size, struct message * message);
@@ -31,25 +30,25 @@ static ssize_t unpack_readem_19(const void * buffer, size_t size, struct message
 static ssize_t unpack_readem_list_1C(const void * buffer, size_t size, struct message * message);
 static int validate(const void * buffer, ssize_t ssize);
 
-// Записть сообщение в буфер
-// В случае успеха возврщает кол-во прочитанных байт
-// 0 - ошибка
+/* Записть сообщение в буфер
+ * В случае успеха возврщает кол-во прочитанных байт
+ * 0 - ошибка */
 ssize_t tekon_resp_unpack(const void * buffer, size_t size, struct message * message, enum tekon_message_type type, uint8_t * number)
 {
     assert(buffer);
     assert(size);
     assert(message);
-    // Быстрые проверки сообщения
-    // - сообщение не может быть меньше 8 байт (кроме квитанций)
-    // - начинается с 0x10 или 0x68 (кроме квитанций)
-    // - номер посылки имеет фискированное положение (2 байт для фикс. сообщ. и 5
-    // для переменныз сообщ.)
+    /* Быстрые проверки сообщения
+     * - сообщение не может быть меньше 8 байт (кроме квитанций)
+     * - начинается с 0x10 или 0x68 (кроме квитанций)
+     * - номер посылки имеет фискированное положение (2 байт для фикс. сообщ. и 5
+     * для переменныз сообщ.) */
 
-    // Грубая проверка - длина + КС
+    /* Грубая проверка - длина + КС */
     if(!validate(buffer,size))
         return 0;
 
-    // Самый простой вариант - подтверждение
+    /* Самый простой вариант - подтверждение */
     const uint8_t * ptr = buffer;
     const uint8_t start = ptr[0];
 
@@ -58,17 +57,17 @@ ssize_t tekon_resp_unpack(const void * buffer, size_t size, struct message * mes
         return 1;
     }
 
-    // извлечение номера сообщения
+    /* извлечение номера сообщения */
     if(number) {
 
         if(start == TEKON_PROTO_FIX_PREFIX)
             *number = ptr[1] & 0x0F;
         else if(start == TEKON_PROTO_VAR_PREFIX)
             *number = ptr[4] & 0x0F;
-        // ACK / NACK без номера
+        /* ACK / NACK без номера */
     }
 
-    // разбор сообщения
+    /* разбор сообщения */
     switch(type) {
     case TEKON_MSG_READEM_PAR_11:
         return unpack_readem_11(buffer, size, message);
@@ -312,9 +311,9 @@ static void buffer_reader_init(struct buffer_reader * self, const void * buffer,
     self->avail = size;
 }
 
-// Запись значений в буфер.
-// 1 - успешно
-// 0 - ошибка
+/* Запись значений в буфер.
+ * 1 - успешно
+ * 0 - ошибка */
 static int buffer_reader_u8(struct buffer_reader * self, uint8_t * u8)
 {
     assert(self);
@@ -330,24 +329,6 @@ static int buffer_reader_u8(struct buffer_reader * self, uint8_t * u8)
     self->avail-=size;
     return 1;
 }
-
-/*static int buffer_reader_u16(struct buffer_reader * self, uint16_t * u16)
-{
-
-    assert(self);
-    assert(u16);
-
-    const size_t size = sizeof(*u16);
-
-    if(self->avail < size)
-        return 0;
-
-    memcpy(u16, self->pos, size);
-    self->pos+=size;
-    self->avail-=size;
-    return 1;
-
-}*/
 
 static int buffer_reader_u32(struct buffer_reader * self, uint32_t * u32)
 {

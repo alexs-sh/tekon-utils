@@ -18,13 +18,11 @@ struct buffer_writer {
 
 static void buffer_writer_init(struct buffer_writer * self, void * buffer, size_t size);
 
-// Запись значений в буфер.
-// 1 - успешно
-// 0 - ошибка
+/* Запись значений в буфер.
+ * 1 - успешно
+ * 0 - ошибка */
 static int buffer_writer_u8(struct buffer_writer * self, uint8_t u8);
 static int buffer_writer_u16(struct buffer_writer * self, uint16_t u16);
-//static int buffer_writer_u32(struct buffer_writer * self, uint32_t u32);
-
 
 static ssize_t pack_readem_11(void * buffer, size_t size, const struct message * message, uint8_t number);
 static ssize_t pack_readem_14(void * buffer, size_t size, const struct message * message, uint8_t number);
@@ -63,7 +61,7 @@ ssize_t tekon_req_pack(void * buffer, size_t size, const struct message * messag
 
 static ssize_t pack_readem_11(void * buffer, size_t size, const struct message * message, uint8_t number)
 {
-    // Лимиты для этого типа сообщений
+    /* Лимиты для этого типа сообщений */
     const uint8_t frame_size = 9;
     const uint8_t code = 0x11;
 
@@ -98,7 +96,7 @@ static ssize_t pack_readem_14(void * buffer, size_t size, const struct message *
     assert(message);
     assert(message->nelements > 3);
 
-    //Т10.06.59РД-Д1 стр. 10-12
+    /*Т10.06.59РД-Д1 стр. 10-12*/
     const uint8_t nelem = message->nelements;
     const uint8_t code = 0x14;
     const uint8_t command = message->payload.bytes[2];
@@ -109,13 +107,13 @@ static ssize_t pack_readem_14(void * buffer, size_t size, const struct message *
     uint8_t len = 0;
 
     switch(command) {
-    // Запись регистра
+    /* Запись регистра */
     case 0x03:
 
         frame_size = 18;
         len = 12;
         break;
-    // Установка уровня доступа
+    /* Установка уровня доступа */
     case 0x05:
         frame_size = 17;
         len =  11;
@@ -190,7 +188,7 @@ static ssize_t pack_readem_19(void * buffer, size_t size, const struct message *
 
 static ssize_t pack_readem_list_1C(void * buffer, size_t size, const struct message * message, uint8_t number)
 {
-    // Лимиты для этого типа сообщений
+    /* Лимиты для этого типа сообщений */
     const uint8_t nelem = message->nelements;
     const uint8_t frame_size = nelem * 6 + 9;
     const uint8_t len = nelem * 6 + 3;
@@ -236,11 +234,12 @@ static ssize_t pack_readem_list_1C(void * buffer, size_t size, const struct mess
 
 }
 
-// Копирование в буфер везде сделано через memcpy.
-// во-первых это устраняет проблемы с невыровненным доступом к памяти (ARMv5 например)
-// во-вторых большинство компиляторов могут правильно понять и оптимизировать
-// этот код исключив реальный вызов функции.
-// Итого, memcpy обеспечивает переносимый и очень быстрый способ записи в буфер
+/* Копирование в буфер везде сделано через memcpy.
+ * во-первых это устраняет проблемы с невыровненным доступом к памяти (ARMv5 например)
+ * во-вторых большинство компиляторов могут правильно понять и оптимизировать
+ * этот код исключив реальный вызов функции.
+ * Итого, memcpy обеспечивает переносимый и очень быстрый способ записи в буфер
+ * */
 static void buffer_writer_init(struct buffer_writer * self, void * buffer, size_t size)
 {
     assert(self);

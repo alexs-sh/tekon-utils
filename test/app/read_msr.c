@@ -12,7 +12,7 @@
 
 float u32_to_f32(uint32_t value)
 {
-    //[-Werror=strict-aliasing]
+    /*[-Werror=strict-aliasing]*/
     float res = 0;
     memcpy(&res, &value, 4);
     return res;

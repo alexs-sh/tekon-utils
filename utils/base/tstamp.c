@@ -125,8 +125,8 @@ int timestamp_seq_month(struct timestamp_seq * self, const struct tekon_date * d
     if(!(depth == 12 || depth == 48))
         return 0;
 
-    const int step = 3600*24*8; // шаг 8 дней в сек.
-    const int64_t limit = depth * 31 * 24 * 3600; // мес * дни * часы * сек
+    const int step = 3600*24*8; /* шаг 8 дней в сек. */
+    const int64_t limit = depth * 31 * 24 * 3600; /* мес * дни * часы * сек */
     int64_t elapsed = 0;
     int64_t utc = 0;
 
@@ -293,8 +293,8 @@ int timestamp_seq_hour(struct timestamp_seq * self, const struct tekon_date * da
         tekon_time_from_local(&tekon_tm, &dt);
         tekon_date_from_local(&tekon_dt, &dt);
 
-        // Проверяем метку времени. Если она еще не добавлена, то выполняем
-        // округление и добавляем
+        /* Проверяем метку времени. Если она еще не добавлена, то выполняем
+           округление и добавляем */
         int probe = tekon_hour_index(tekon_dt.year, tekon_dt.month, tekon_dt.day, tekon_tm.hour, depth);
         if(timestamp_seq_get(self, probe) == TIME_INVALID) {
             dt.tm_min = 0;
@@ -330,7 +330,7 @@ int timestamp_seq_interval(struct timestamp_seq * self, const struct tekon_date 
 
     timestamp_seq_init(self);
 
-    const size_t limit = depth * interval * 60; // лимит в секундах
+    const size_t limit = depth * interval * 60; /* лимит в секундах */
     const int step = interval * 60;
 
     size_t elapsed = 0;
@@ -338,7 +338,7 @@ int timestamp_seq_interval(struct timestamp_seq * self, const struct tekon_date 
 
     memset(&dt, 0, sizeof(dt));
 
-    // Заполнить дату/время.
+    /* Заполнить дату/время. */
     if(!tekon_date_to_local(date, &dt))
         return 0;
 
@@ -349,7 +349,7 @@ int timestamp_seq_interval(struct timestamp_seq * self, const struct tekon_date 
     if(utc == TIME_INVALID)
         return 0;
 
-    // Оркгулить по границе интервала в большую сторону
+    /* Оркгулить по границе интервала в большую сторону */
     utc = (utc / step + 1) * step;
     do {
         struct tm ldt;

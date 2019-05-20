@@ -28,11 +28,11 @@ int log_print(const char * format, ...)
 {
     char level = format[0] - '0';
 
-    // Отфильтровать по типу сообщений
+    /* Отфильтровать по типу сообщений */
     if(level > log_level)
         return 0;
 
-    // Вывести
+    /* Вывести */
     va_list args;
     va_start(args, format);
     int result = vfprintf(stderr, format + 1, args);

@@ -202,10 +202,10 @@ static int read(struct app * app)
                              diff;
 
 
-        // Если порция данных была прочитана с ошибкой, то нет смысла читать
-        // остальные. Просто стивим всем оставшимся ошибку связи. Чтобы
-        // сделать это с минимальным трудом, кладем коннект и пытаемся
-        // вычитать данные на отключенном линке.
+        /* Если порция данных была прочитана с ошибкой, то нет смысла читать
+         остальные. Просто стивим всем оставшимся ошибку связи. Чтобы
+         сделать это с минимальным трудом, кладем коннект и пытаемся
+         вычитать данные на отключенном линке. */
         if(!read_multiple(msr_table_get(table, pos), chunk, link)) {
             link_down(link);
             return 0;
@@ -281,13 +281,13 @@ static int read_args(struct app * app, int argc, char * const argv[])
         }
     }
 
-    // Адрес не задан
+    /* Адрес не задан */
     if(app->netcfg.port == 0) {
         printf("please enter gateway's address\n\n");
         return 0;
     }
 
-    // Параметры не заданы
+    /* Параметры не заданы */
     if(msr_table_size(&app->table) == 0) {
         printf("please enter parameters to read\n\n");
         return 0;
@@ -306,19 +306,19 @@ void print(struct msr * self, void * data)
     size_t remain = sizeof(buffer);
     char * ptr = buffer;
 
-    // Добавить адрес шлюза
+    /* Добавить адрес шлюза */
     int result = snprintf(ptr, remain, "%"PRIu8":",self->gateway);
     assert(result > 0);
     ptr += result;
     remain -= result;
 
-    // Добавить адрес устройства
+    /* Добавить адрес устройства */
     result = snprintf(ptr, remain, "%"PRIu8":",self->device);
     assert(result > 0);
     ptr += result;
     remain -= result;
 
-    // Добавить адрес параметра
+    /* Добавить адрес параметра */
     result = self->hex ?
              snprintf(ptr, remain, "0x%x:", self->address) :
              snprintf(ptr, remain, "%"PRIu16":", self->address);
@@ -326,14 +326,13 @@ void print(struct msr * self, void * data)
     ptr += result;
     remain -= result;
 
-    // Добавить индекс параметра
     result = snprintf(ptr, remain, "%"PRIu16" ", self->index);
     assert(result > 0);
     ptr += result;
     remain -= result;
 
 
-    // Добавить значение
+    /* Добавить значение */
     switch(self->type) {
     case TEKON_PARAM_RAW:
         result = snprintf(ptr, remain, "R 0x%02x%02x%02x%02x ",self->value.byte[0], self->value.byte[1], self->value.byte[2], self->value.byte[3]);
@@ -367,7 +366,7 @@ void print(struct msr * self, void * data)
     ptr += result;
     remain -= result;
 
-    // Добавить качество
+    /* Добавить качество */
     switch(self->qual) {
     case Q_INVALID:
         result = snprintf(ptr, remain, "INV ");
@@ -386,17 +385,17 @@ void print(struct msr * self, void * data)
     ptr += result;
     remain -= result;
 
-    // Добавить метку времени
+    /* Добавить метку времени */
     result = snprintf(ptr, remain, "%"PRIi64" ", self->timestamp);
     assert(result > 0);
     ptr += result;
     remain -= result;
 
-    // Добавить информацию о сдвиге часового пояса
+    /* Добавить информацию о сдвиге часового пояса */
     result = snprintf(ptr, remain, "%"PRIi32, app->tzoffset);
     assert(result > 0);
 
-    // Вывести
+    /* Вывести */
     printf("%s\n", buffer);
 }
 

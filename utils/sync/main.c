@@ -30,7 +30,7 @@ struct app {
     struct dtaddr dtaddr;
     struct checks checks;
     uint8_t password[TEKON_PASSWD_LEN];
-    int64_t newtime; // Устанавливаемое время (UTC)
+    int64_t newtime; /* Устанавливаемое время (UTC) */
     int allow_diff;
     int timeout;
 };
@@ -407,14 +407,14 @@ static int read_args(struct app * app, int argc, char * const argv[])
         }
     }
 
-    // Пароль не задан
+    /* Пароль не задан */
     if(!passread) {
         printf("please enter password\n\n");
         return 0;
     }
 
 
-    // Адрес не задан
+    /* Адрес не задан */
     if(app->netcfg.port == 0) {
         printf("please enter gateway's address\n\n");
         return 0;
@@ -422,12 +422,13 @@ static int read_args(struct app * app, int argc, char * const argv[])
 
     app->dtaddr.gateway = app->netcfg.gateway;
 
-    // Адрес не задан
+    /* Адрес не задан */
     if(app->dtaddr.date == 0) {
         printf("please enter date's address\n\n");
         return 0;
     }
-    // Адрес не задан
+
+    /* Адрес не задан */
     if(app->dtaddr.time == 0) {
         printf("please enter time's address\n\n");
         return 0;

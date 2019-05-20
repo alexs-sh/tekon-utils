@@ -232,7 +232,7 @@ MU_TEST(test_archaddr_hex)
 
 MU_TEST(test_dtaddr)
 {
-    //3:0xF017:0xF018
+    /*3:0xF017:0xF018*/
     struct dtaddr cfg;
     int result = dtaddr_from_string(&cfg, "3:0xF017:0xF018");
     mu_assert_int_eq(1,result);
@@ -243,7 +243,7 @@ MU_TEST(test_dtaddr)
 
 MU_TEST(test_intcfg)
 {
-    //3:0xF017:0xF018
+    /*3:0xF017:0xF018*/
     struct intcfg cfg;
     int result = intcfg_from_string(&cfg, "m:12");
     mu_assert_int_eq(1,result);

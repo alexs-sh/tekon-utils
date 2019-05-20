@@ -14,15 +14,15 @@ extern "C" {
 #include <stddef.h>
 
 #define TEKON_INVALID_DEV_ADDR    0
-#define TEKON_INVALID_INDEX       0xFFFF // Признак невалидного индекса при четнии индексированных параметров
+#define TEKON_INVALID_INDEX       0xFFFF /* Признак невалидного индекса при четнии индексированных параметров */
 
 #define TEKON_PASSWD_LEN      8
 #define TEKON_PRIV_ADMIN      2
 #define TEKON_PRIV_USER       1
 
 #define TEKON_PROTO_MAX_ADU_SIZE    255
-#define TEKON_PROTO_PLIST_SIZE      40  // Длина списка параметров
-#define TEKON_PROTO_ILIST_SIZE      60  // Длина списка инд. параметров
+#define TEKON_PROTO_PLIST_SIZE      40  /* Длина списка параметров */
+#define TEKON_PROTO_ILIST_SIZE      60  /* Длина списка инд. параметров */
 #define TEKON_PROTO_POS_ACK         0xA2
 #define TEKON_PROTO_NEG_ACK         0xE5
 #define TEKON_PROTO_FIX_PREFIX      0x10
@@ -57,7 +57,7 @@ struct tekon_parameter {
     uint16_t address;
     uint16_t index;
     uint32_t value;
-    uint8_t qual; // значения байт качества (0 - ОК)
+    uint8_t qual; /* значения байт качества (0 - ОК) */
 };
 
 uint8_t tekon_crc(const void * buffer, size_t size);

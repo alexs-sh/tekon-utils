@@ -37,7 +37,7 @@ struct app {
 
     int tzoffset;
     int timeout;
-    int use_tsc; //time stamp converter
+    int use_tsc; /*time stamp converter*/
 };
 
 static void apply_noconn(struct rec * rec, void * data);
@@ -242,13 +242,13 @@ static int read_archive(struct app * app)
  */
 static int read(struct app * app)
 {
-    // создать подключение
+    /* создать подключение */
     if(app->netcfg.type == LINK_TCP)
         link_init_tcp(&app->link, app->netcfg.ip, app->netcfg.port, app->timeout);
     else if(app->netcfg.type == LINK_UDP)
         link_init_udp(&app->link, app->netcfg.ip, app->netcfg.port, app->timeout);
 
-    // Установить подключение и флаг нет связи
+    /* Установить подключение и флаг нет связи */
     int result = link_up(&app->link);
 
     archive_foreach(&app->archive, apply_noconn, NULL);
@@ -258,7 +258,7 @@ static int read(struct app * app)
         return 0;
     }
 
-    // Прочитать время с утсройства
+    /* Прочитать время с утсройства */
     if(app->use_tsc) {
         if(!read_time(&app->begin_at.date, &app->begin_at.time, &app->dtcfg, &app->link)) {
             link_down(&app->link);
@@ -269,13 +269,13 @@ static int read(struct app * app)
     }
 
 
-    // Прочитать архив
+    /* Прочитать архив */
     if(!read_archive(app)) {
         link_down(&app->link);
         return 0;
     }
 
-    // Прочитать время с утсройства
+    /* Прочитать время с утсройства */
     if(app->use_tsc) {
         if(!read_time(&app->end_at.date, &app->end_at.time, &app->dtcfg, &app->link)) {
             link_down(&app->link);
@@ -284,7 +284,7 @@ static int read(struct app * app)
 
     }
 
-    // Закрыть коннект
+    /* Закрыть коннект */
     link_down(&app->link);
     return 1;
 }
@@ -354,26 +354,26 @@ static int read_args(struct app * app, int argc, char * const argv[])
         }
     }
 
-    // Дописать инфу
+    /* Дописать инфу */
     app->archive.address.gateway = gateway;
     app->dtcfg.gateway = gateway;
     app->use_tsc = app->dtcfg.gateway != TEKON_INVALID_DEV_ADDR &&
                    app->dtcfg.device != TEKON_INVALID_DEV_ADDR &&
                    app->archive.interval.type != 0;
 
-    // Адрес не задан
+    /* Адрес не задан */
     if(app->netcfg.port == 0) {
         printf("please enter valid gateway address\n\n");
         return 0;
     }
 
-    // Архив не задан
+    /* Архив не задан */
     if(app->archive.address.device == 0) {
         printf("please enter valid archive address\n\n");
         return 0;
     }
 
-    // Введены неподдерживаемые типы
+    /* Введены неподдерживаемые типы */
     enum tekon_parameter_type type = app->archive.address.type;
     if(!(type == TEKON_PARAM_F32 ||
             type == TEKON_PARAM_U32 ||
@@ -384,7 +384,7 @@ static int read_args(struct app * app, int argc, char * const argv[])
         return 0;
     }
 
-    // Введены недопустимые параметры интервала/параметра
+    /* Введены недопустимые параметры интервала/параметра */
     const char archtype = app->archive.interval.type;
     const uint16_t size = app->archive.address.count;
     const uint16_t start = app->archive.address.index;
@@ -415,7 +415,7 @@ static int fill_acrhive(struct archive * archive)
 {
     assert(archive);
 
-    // Заполнить архив
+    /* Заполнить архив */
     size_t i;
     for(i = 0; i < archive->address.count; i++) {
         struct rec rec;
@@ -424,7 +424,7 @@ static int fill_acrhive(struct archive * archive)
             return 0;
         }
     }
-    // Параметры не заданы
+    /* Параметры не заданы */
     if(archive_size(archive) == 0) {
         return 0;
     }
@@ -442,7 +442,7 @@ static void apply_noconn(struct rec * rec, void * data)
 /* Печать записи из таблицы измерений */
 static void print(struct rec * self, void * data )
 {
-    // Общий формат вывода: адрес тип значение качество время сдвиг [индекс]
+    /* Общий формат вывода: адрес тип значение качество время сдвиг [индекс] */
     assert(self);
     assert(data);
 
@@ -452,19 +452,19 @@ static void print(struct rec * self, void * data )
     const struct app * app = data;
     const struct paraddr * addr = &app->archive.address;
 
-    // Добавить адрес шлюза
+    /* Добавить адрес шлюза */
     int result = snprintf(ptr, remain, "%"PRIu8":",addr->gateway);
     assert(result > 0);
     ptr += result;
     remain -= result;
 
-    // Добавить адрес устройства
+    /* Добавить адрес устройства */
     result = snprintf(ptr, remain, "%"PRIu8":",addr->device);
     assert(result > 0);
     ptr += result;
     remain -= result;
 
-    // Добавить адрес параметра
+    /* Добавить адрес параметра */
     result = addr->hex ?
              snprintf(ptr, remain, "0x%x:", addr->address) :
              snprintf(ptr, remain, "%"PRIu16":", addr->address);
@@ -472,13 +472,13 @@ static void print(struct rec * self, void * data )
     ptr += result;
     remain -= result;
 
-    // Добавить индекс параметра
+    /* Добавить индекс параметра */
     result = snprintf(ptr, remain, "%"PRIu16" ", self->index);
     assert(result > 0);
     ptr += result;
     remain -= result;
 
-    // Добавить тип и значение
+    /* Добавить тип и значение */
     switch(app->archive.address.type) {
     case TEKON_PARAM_RAW:
         result = snprintf(ptr, remain, "R 0x%02x%02x%02x%02x ",self->value.byte[0], self->value.byte[1], self->value.byte[2], self->value.byte[3]);
@@ -504,7 +504,7 @@ static void print(struct rec * self, void * data )
     ptr += result;
     remain -= result;
 
-    // Добавить качество
+    /* Добавить качество */
     switch(self->qual) {
     case Q_INVALID:
         result = snprintf(ptr, remain, "INV ");
@@ -523,17 +523,17 @@ static void print(struct rec * self, void * data )
     ptr += result;
     remain -= result;
 
-    // Добавить метку времени
+    /* Добавить метку времени */
     result = snprintf(ptr, remain, "%"PRIi64" ", self->timestamp);
     assert(result>0);
     ptr += result;
     remain -= result;
 
-    // Добавить сдвиг часового пояса
+    /* Добавить сдвиг часового пояса */
     result = snprintf(ptr, remain, "%"PRIi32" ", app->tzoffset);
     assert(result>0);
 
-    // Вывести
+    /* Вывести */
     printf("%s\n", buffer);
 }
 
@@ -551,23 +551,23 @@ int main(int argc, char * argv[])
 
     signal(SIGINT, sigint);
 
-    //прочитать аргменты командной строки
+    /* прочитать аргменты командной строки */
     if(!read_args(&app, argc, argv)) {
         usage();
         return 1;
     }
 
-    // подготовить архив к работе
+    /* подготовить архив к работе */
     if(!fill_acrhive(&app.archive))
         return 1;
 
-    // Прочитать данные из утсройства
+    /* Прочитать данные из утсройства */
     int result = read(&app);
 
-    // Перевести индексы в метки времени
+    /* Перевести индексы в метки времени */
     archive_index_to_utc(&app.archive, &app.begin_at, &app.end_at);
 
-    // Вывести результат
+    /* Вывести результат */
     archive_foreach(&app.archive, print, &app);
     return result == 0;
 }

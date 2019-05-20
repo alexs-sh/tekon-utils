@@ -11,10 +11,10 @@ extern "C" {
 #include "utils/base/time.h"
 
 #if defined(__unix__) || defined(__linux__)
-// UNIX or LINUX
+/* UNIX or LINUX*/
 #include <time.h>
 #elif defined(_WIN32) || defined(WIN32)
-// WINDOWS
+/* WINDOWS */
 #include <sys/timeb.h>
 #endif
 
@@ -25,14 +25,14 @@ MU_TEST(test_timestamp)
     int64_t local = time_now_local();
 
 #if defined(__unix__) || defined(__linux__)
-    // UNIX or LINUX
+    /* UNIX or LINUX */
     struct tm ldt;
     time_t tmp = time(NULL);
     localtime_r(&tmp, &ldt);
     mu_assert_int_eq(utc + ldt.tm_gmtoff, local);
 
 #elif defined(_WIN32) || defined(WIN32)
-    // WINDOWS
+    /* WINDOWS */
     struct _timeb tb;
     _ftime( &tb );
     mu_assert_int_eq(utc - tb.timezone * 60, local);

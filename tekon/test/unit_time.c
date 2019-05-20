@@ -13,11 +13,11 @@ extern "C" {
 MU_TEST(test_month_idx_12)
 {
 
-    // контрольные значения
+    /* контрольные значения */
     mu_assert_int_eq(0x08, tekon_month_index(16, 9, 12));
     mu_assert_int_eq(0x06, tekon_month_index(17, 7, 12));
 
-    // перебор
+    /* перебор */
     size_t i;
     for(i = 0; i < 12; i++) {
         mu_assert_int_eq(i, tekon_month_index(19, i + 1, 12));

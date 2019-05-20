@@ -14,10 +14,10 @@ extern "C" {
 #define LOG_WARN "2"
 #define LOG_INFO "3"
 
-// Уровень логирования
+/* Уровень логирования */
 void log_setlevel(int level);
 
-// Вывод в лог.
+/* Вывод в лог. */
 int log_print(const char * format, ...);
 
 #ifdef __cplusplus

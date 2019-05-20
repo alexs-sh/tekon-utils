@@ -1,6 +1,6 @@
-[![Total alerts](https://img.shields.io/lgtm/alerts/b/alexsteam4000/tekon-utils-pub.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/b/alexsteam4000/tekon-utils-pub/alerts/)
-[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/b/alexsteam4000/tekon-utils-pub.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/b/alexsteam4000/tekon-utils-pub/context:cpp)
-[![codecov](https://codecov.io/bb/alexsteam4000/tekon-utils-pub/branch/master/graph/badge.svg)](https://codecov.io/bb/alexsteam4000/tekon-utils-pub)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/alexs-sh/tekon-utils.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/alexs-sh/tekon-utils/alerts/)
+[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/alexs-sh/tekon-utils.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/alexs-sh/tekon-utils/context:cpp)
+[![codecov](https://codecov.io/gh/alexs-sh/tekon-utils/branch/master/graph/badge.svg)](https://codecov.io/gh/alexs-sh/tekon-utils)
 
 # TEKON-UTILS
 
@@ -18,6 +18,26 @@ tekon_msr -a udp:10.0.0.3:51960@9 -p'3:0xF001:0:H 3:0xF017:0:D 3:0xF018:0:T 3:0x
 9:3:0xf018:0 T 13:35:49 OK 1558082153 18000
 9:3:0x801c:2 F 38.151833 OK 1558082153 18000
 ```
+В примере выполняется чтение 4-х параметров. 
+
+Аргумент| Значение             | Описание
+--------|----------------------| ----------------------------------------------------------------------------------------------
+-a      | udp:10.0.0.3:51960@9 | чтение будет выполнено по UDP, с IP адреса - 10.0.0.3, через порт - 51960, адрес К-104 - 9
+-p      | 3:0xF001:0:H         | адрес Тэкона - 3, адрес параметра - 0xF001, индекс параметра - 0, тип параметра - H (HEX)
+
+Вывод программы: **9:3:0xf001:0 H 0x3840 OK 1558082153 18000** 
+
+Столбец | Значение             | Описание
+--------|----------------------| ----------------------------------------------------------------------------------------------
+ 1      | 9:3:0xf001:0         | адрес параметра. Адрес К-104 - 9, адрес Тэкона - 3, адрес параметра - 0xf001, индекс параметра - 0
+ 2      | H                    | тип парметра - HEX
+ 3      | 0x3840               | значение параметра
+ 4      | OK                   | качество
+ 5      | 1558082153           | метка времени (UTC)
+ 6      | 18000                | сдвиг часового пояса хоста относительно UTC
+ 
+Более подробную справку можно получить, запустив программу без аргументов
+или с ключем **-h**.
 
 ### Чтение архива
 ```console
@@ -27,11 +47,42 @@ tekon_arch -a udp:10.0.0.3:51960@9 -p 3:0x801C:0:12:F  -i m:12   -d 3:0xF017:0xF
 9:3:0x801c:2 F 38.151833 OK 1551380400 18000
 ...
 ```
+В примере выполняется чтение месячного архива глубиной 12 записей. 
+
+Аргумент| Значение             | Описание
+--------|----------------------| ----------------------------------------------------------------------------------------------
+-a      | udp:10.0.0.3:51960@9 | чтение будет выполнено по UDP, с IP адреса - 10.0.0.3, через порт - 51960, адрес К-104 - 9
+-p      | 3:0x801C:0:12:F      | адрес Тэкона - 3, адрес архива - 0x801C, стартовый индекс - 0, кол-во записей 12, формат -F (float)
+-m      | m:12                 | тип - m (месячный), глубина - 12
+-d      | 3:0xF017:0xF018      | адрес устройства - 3, адрес даты - 0xF017, адрес времени - 0xF018
+
+Вывод программы: **9:3:0x801c:0 F -nan OK 1546282800 18000** 
+
+Столбец | Значение             | Описание
+--------|----------------------| ----------------------------------------------------------------------------------------------
+ 1      | 9:3:0x801с:0         | адрес записи. Адрес К-104 - 9, адрес Тэкона - 3, адрес параметра - 0x801с, индекс - 0
+ 2      | F                    | тип парметра - float
+ 3      | -nan                 | значение параметра
+ 4      | OK                   | качество
+ 5      | 1546282800           | метка времени (UTC)
+ 6      | 18000                | сдвиг часового пояса хоста относительно UTC
+ 
+Более подробную справку можно получить, запустив программу без аргументов
+или с ключем **-h**.
 
 ### Синхронизация времени
 ```console
 tekon_sync -a udp:10.0.0.3:51960@9 -d 3:0xF017:0xF018 -p 00000001
 ```
+
+В примере выполняется запись текущего времени хоста в Тэкон. 
+
+Аргумент| Значение             | Описание
+--------|----------------------| ----------------------------------------------------------------------------------------------
+-a      | udp:10.0.0.3:51960@9 | чтение будет выполнено по UDP, с IP адреса - 10.0.0.3, через порт - 51960, адрес К-104 - 9
+-d      | 3:0xF017:0xF018      | адрес устройства - 3, адрес даты - 0xF017, адрес времени - 0xF018
+-p      | 00000001             | пароль наладчика
+
 
 ## Сборка
 
@@ -44,7 +95,7 @@ tekon_sync -a udp:10.0.0.3:51960@9 -d 3:0xF017:0xF018 -p 00000001
 ### Debian x86_64
 ```console
 apt install git cmake make gcc
-git clone  <repo>
+git clone https://github.com/alexs-sh/tekon-utils.git
 cd tekon-utils/
 mkdir build
 cd build
@@ -56,7 +107,7 @@ make test
 ### Debian ARM
 ```console
 apt install git cmake make gcc-arm-linux-gnueabihf
-git clone  <repo>
+git clone https://github.com/alexs-sh/tekon-utils.git
 cd tekon-utils/
 mkdir build-armhf
 cd build-armhf
@@ -67,7 +118,7 @@ make
 ### Windows XP x86
 ```console
 apt install git cmake make gcc-mingw-w64-i686
-git clone  <repo>
+git clone https://github.com/alexs-sh/tekon-utils.git
 cd tekon-utils/
 mkdir build-winxp-x86
 cd build-winxp-x86
@@ -77,8 +128,6 @@ make
 
 Все примеры выполнены в ОС Debian 9 x86_64.
 
-git clone  <repo> - вместо параметра <repo> следует подставить адрес репозитория, 
-например, https://github.com/alexs-sh/tekon-utils.git
 
 ## Применение
 
@@ -101,7 +150,7 @@ git clone  <repo> - вместо параметра <repo> следует под
 
 Формат вывода данных:
 
-шлюз:адрес:параметр:индекс тип значение качество UTC TZ
+*шлюз:адрес:параметр:индекс тип значение качество UTC TZ*
 ```console
 9:3:0xf001:0 H 0x3840 OK 1557900053 18000
 ```
@@ -110,7 +159,7 @@ git clone  <repo> - вместо параметра <repo> следует под
 
 Формат вывода данных:
 
-шлюз:адрес:параметр:индекс тип значение качество UTC TZ
+*шлюз:адрес:параметр:индекс тип значение качество UTC TZ*
 ```console
 9:3:0x801c:0 F -nan OK 1546282800 18000
 ```

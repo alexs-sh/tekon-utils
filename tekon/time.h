@@ -37,23 +37,23 @@ struct tekon_date {
  * минуты [0,59]
  * */
 
-// Т10.06.59РД-Д1 стр. 31 Б1,Б2,Б3
-// depth 12 или 48
+/* Т10.06.59РД-Д1 стр. 31 Б1,Б2,Б3
+ * depth 12 или 48 */
 int tekon_month_index(uint8_t year, uint8_t month,uint8_t depth);
 
 
-// Т10.06.59РД-Д1 стр. 31 Б4
+/* Т10.06.59РД-Д1 стр. 31 Б4 */
 int tekon_day_index(uint8_t year, uint8_t month, uint8_t day);
 
-// Т10.06.59РД-Д1 стр. 31 Б4
+/* Т10.06.59РД-Д1 стр. 31 Б4 */
 int tekon_day_index(uint8_t year, uint8_t month, uint8_t day);
 
-// Т10.06.59РД-Д1 стр. 32 Б5
-// depth 384 (16 дней), 764 (32 дня), 1536 (64 дня)
+/* Т10.06.59РД-Д1 стр. 32 Б5
+ * depth 384 (16 дней), 764 (32 дня), 1536 (64 дня) */
 int tekon_hour_index(uint8_t year, uint8_t month, uint8_t day, uint8_t hour, uint16_t depth);
 
-// Т10.06.59РД-Д1 стр. 32 Б6
-//interval - минуты
+/* Т10.06.59РД-Д1 стр. 32 Б6
+ * interval - минуты */
 int tekon_interval_index(uint8_t year, uint8_t month, uint8_t day,
                          uint8_t hour, uint8_t minute, uint16_t limit, uint16_t interval);
 

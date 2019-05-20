@@ -210,14 +210,14 @@ MU_TEST(test_checks_run_indexes)
     result = checks_run(&checks, &newtime, &devtime);
     mu_assert_int_eq(1, result);
 
-    // Сдвиг часового индекса
+    /* Сдвиг часового индекса */
     newtime.tm_hour++;
     result = checks_run(&checks, &newtime, &devtime);
     mu_assert_int_eq(0, result);
     mu_assert_int_eq(TIME_CHECK_INDEX, checks.fail);
     checks.fail = TIME_CHECK_NONE;
 
-    // Сдвиг суточного индекса
+    /* Сдвиг суточного индекса */
     memcpy(&newtime, &devtime, sizeof(devtime));
     newtime.tm_mday++;
     result = checks_run(&checks, &newtime, &devtime);
@@ -225,7 +225,7 @@ MU_TEST(test_checks_run_indexes)
     mu_assert_int_eq(TIME_CHECK_INDEX, checks.fail);
     checks.fail = TIME_CHECK_NONE;
 
-    // Сдвиг месячного индекса
+    /* Сдвиг месячного индекса */
     memcpy(&newtime, &devtime, sizeof(devtime));
     newtime.tm_mon++;
     result = checks_run(&checks, &newtime, &devtime);
@@ -233,7 +233,7 @@ MU_TEST(test_checks_run_indexes)
     mu_assert_int_eq(TIME_CHECK_INDEX, checks.fail);
     checks.fail = TIME_CHECK_NONE;
 
-    // Сдвиг интервального индекса (5 мин)
+    /* Сдвиг интервального индекса (5 мин) */
     memcpy(&newtime, &devtime, sizeof(devtime));
     newtime.tm_min += 7;
     result = checks_run(&checks, &newtime, &devtime);

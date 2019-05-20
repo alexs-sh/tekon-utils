@@ -17,7 +17,7 @@ extern "C" {
 #include "utils/base/string.h"
 
 #if defined(__unix__) || defined(__linux__)
-#include <arpa/inet.h>  //inet_addr
+#include <arpa/inet.h>
 #endif
 
 
@@ -52,7 +52,7 @@ static int intcfg_is_valid(const struct intcfg * self)
 
 int netaddr_from_string(struct netaddr * self, const char * str)
 {
-    //udp:192.168.1.10:51960@1
+    /*udp:192.168.1.10:51960@1*/
     assert(self);
     if(string_is_term(str))
         return 0;
@@ -69,7 +69,7 @@ int netaddr_from_string(struct netaddr * self, const char * str)
 
     memset(&result, 0, sizeof(result));
 
-    // прочитать тип адреса
+    /* прочитать тип адреса */
     for(cnt = 0; cnt < typelen && !string_is_term(ptr) && *ptr != ':'; cnt++, ptr++) {
         buffer[cnt] = *ptr;
     }
@@ -86,7 +86,7 @@ int netaddr_from_string(struct netaddr * self, const char * str)
     else
         return 0;
 
-    // прочитать IP
+    /* прочитать IP */
     ptr = string_next(ptr);
     for(cnt = 0; cnt < iplen && !string_is_term(ptr) && *ptr != ':'; cnt++, ptr++) {
         result.ip[cnt] = *ptr;
@@ -97,7 +97,7 @@ int netaddr_from_string(struct netaddr * self, const char * str)
     if(!validate_ip(result.ip))
         return 0;
 
-    // прочитать порт
+    /* прочитать порт */
     ptr = string_next(ptr);
     for(cnt = 0; cnt < portlen && !string_is_term(ptr) && *ptr != '@'; cnt++, ptr++) {
         buffer[cnt] = *ptr;
@@ -111,7 +111,7 @@ int netaddr_from_string(struct netaddr * self, const char * str)
 
     result.port = port;
 
-    // прочитать адрес шлюза
+    /* прочитать адрес шлюза */
     ptr = string_next(ptr);
     for(cnt = 0; cnt < gwlen && !string_is_term(ptr); cnt++, ptr++) {
         buffer[cnt] = *ptr;
@@ -129,8 +129,8 @@ int netaddr_from_string(struct netaddr * self, const char * str)
 
 int paraddr_from_string(struct paraddr * self, const char * str)
 {
-    //1:0x2000:0:F
-    //1:123:0:I
+    /*1:0x2000:0:F*/
+    /*1:123:0:I*/
     assert(self);
     if(string_is_term(str))
         return 0;
@@ -147,7 +147,7 @@ int paraddr_from_string(struct paraddr * self, const char * str)
 
     memset(&result, 0, sizeof(result));
 
-    // прочитать адрес устройства
+    /* прочитать адрес устройства */
     for(cnt = 0; cnt < devlen && !string_is_term(ptr) && *ptr != ':'; cnt++, ptr++) {
         buffer[cnt] = *ptr;
     }
@@ -160,7 +160,7 @@ int paraddr_from_string(struct paraddr * self, const char * str)
 
     result.device = device;
 
-    // прочитать № параметра. Адрес может быть как 10-чным, так и 16-ричным.
+    /* прочитать № параметра. Адрес может быть как 10-чным, так и 16-ричным. */
     ptr = string_next(ptr);
     for(cnt = 0; cnt < parlen && !string_is_term(ptr) && *ptr != ':'; cnt++, ptr++) {
         buffer[cnt] = *ptr;
@@ -175,7 +175,7 @@ int paraddr_from_string(struct paraddr * self, const char * str)
     result.address = parameter;
     result.hex = is_hex;
 
-    // прочитать индекс
+    /* прочитать индекс */
     ptr = string_next(ptr);
     for(cnt = 0; cnt < indlen && !string_is_term(ptr) && *ptr != ':'; cnt++, ptr++) {
         buffer[cnt] = *ptr;
@@ -188,7 +188,7 @@ int paraddr_from_string(struct paraddr * self, const char * str)
         return 0;
     result.index = index;
 
-    // прочитать тип
+    /* прочитать тип */
     ptr = string_next(ptr);
     for(cnt = 0; cnt < typelen && !string_is_term(ptr); cnt++, ptr++) {
         buffer[cnt] = *ptr;
@@ -229,8 +229,8 @@ int paraddr_from_string(struct paraddr * self, const char * str)
 int archaddr_from_string(struct paraddr * self, const char * str)
 {
 
-    //3:12345:0:1440:F
-    //3:0x801C:0:1440:F
+    /*3:12345:0:1440:F*/
+    /*3:0x801C:0:1440:F*/
     assert(self);
     if(string_is_term(str))
         return 0;
@@ -247,7 +247,7 @@ int archaddr_from_string(struct paraddr * self, const char * str)
 
     memset(&result, 0, sizeof(result));
 
-    // прочитать адрес устройства
+    /* прочитать адрес устройства */
     for(cnt = 0; cnt < devlen && !string_is_term(ptr) && *ptr != ':'; cnt++, ptr++) {
         buffer[cnt] = *ptr;
     }
@@ -260,7 +260,7 @@ int archaddr_from_string(struct paraddr * self, const char * str)
 
     result.device = device;
 
-    // прочитать № параметра. Адрес может быть как 10-чным, так и 16-ричным.
+    /* прочитать № параметра. Адрес может быть как 10-чным, так и 16-ричным. */
     ptr = string_next(ptr);
     for(cnt = 0; cnt < parlen && !string_is_term(ptr) && *ptr != ':'; cnt++, ptr++) {
         buffer[cnt] = *ptr;
@@ -275,7 +275,7 @@ int archaddr_from_string(struct paraddr * self, const char * str)
     result.address = parameter;
     result.hex = is_hex;
 
-    // прочитать начальный индекс
+    /* прочитать начальный индекс */
     ptr = string_next(ptr);
     for(cnt = 0; cnt < indlen && !string_is_term(ptr) && *ptr != ':'; cnt++, ptr++) {
         buffer[cnt] = *ptr;
@@ -288,7 +288,7 @@ int archaddr_from_string(struct paraddr * self, const char * str)
         return 0;
     result.index = index;
 
-    // прочитать конечный индекс
+    /* прочитать конечный индекс */
     ptr = string_next(ptr);
     for(cnt = 0; cnt < indlen && !string_is_term(ptr) && *ptr != ':'; cnt++, ptr++) {
         buffer[cnt] = *ptr;
@@ -301,7 +301,7 @@ int archaddr_from_string(struct paraddr * self, const char * str)
         return 0;
     result.count = count;
 
-    // прочитать тип
+    /* прочитать тип */
     ptr = string_next(ptr);
     for(cnt = 0; cnt < typelen && !string_is_term(ptr); cnt++, ptr++) {
         buffer[cnt] = *ptr;
@@ -342,7 +342,7 @@ int archaddr_from_string(struct paraddr * self, const char * str)
 
 int dtaddr_from_string(struct dtaddr * self, const char * str)
 {
-    //3:0xF017:0xF018
+    /*3:0xF017:0xF018*/
     assert(self);
     if(string_is_term(str))
         return 0;
@@ -357,7 +357,7 @@ int dtaddr_from_string(struct dtaddr * self, const char * str)
 
     memset(&result, 0, sizeof(result));
 
-    // прочитать адрес устройства
+    /* прочитать адрес устройства */
     for(cnt = 0; cnt < devlen && !string_is_term(ptr) && *ptr != ':'; cnt++, ptr++) {
         buffer[cnt] = *ptr;
     }
@@ -370,7 +370,7 @@ int dtaddr_from_string(struct dtaddr * self, const char * str)
 
     result.device = device;
 
-    // прочитать адрес даты. Может быть как 10-чным, так и 16-ричным.
+    /* прочитать адрес даты. Может быть как 10-чным, так и 16-ричным. */
     ptr = string_next(ptr);
     for(cnt = 0; cnt < parlen && !string_is_term(ptr) && *ptr != ':'; cnt++, ptr++) {
         buffer[cnt] = *ptr;
@@ -384,7 +384,7 @@ int dtaddr_from_string(struct dtaddr * self, const char * str)
 
     result.date = parameter;
 
-    // прочитать адрес времени. Может быть как 10-чным, так и 16-ричным.
+    /* прочитать адрес времени. Может быть как 10-чным, так и 16-ричным. */
     ptr = string_next(ptr);
     for(cnt = 0; cnt < parlen && !string_is_term(ptr) && *ptr != ':'; cnt++, ptr++) {
         buffer[cnt] = *ptr;
@@ -404,8 +404,7 @@ int dtaddr_from_string(struct dtaddr * self, const char * str)
 
 int intcfg_from_string(struct intcfg * self, const char * str)
 {
-    //Y:12
-    //I:1440:5
+    /*Y:12*/
     assert(self);
     if(string_is_term(str))
         return 0;
@@ -436,7 +435,7 @@ int intcfg_from_string(struct intcfg * self, const char * str)
     }
     result.type = type;
 
-    // прочитать глубину архива
+    /* прочитать глубину архива */
     ptr = string_next(ptr);
     ptr = string_next(ptr);
     for(cnt = 0; cnt < depthlen && !string_is_term(ptr) && *ptr != ':'; cnt++, ptr++) {
@@ -447,7 +446,7 @@ int intcfg_from_string(struct intcfg * self, const char * str)
 
     result.depth = atoi(buffer);
 
-    // Прочитать интервал архива
+    /* Прочитать интервал архива */
     ptr = string_next(ptr);
     for(cnt = 0; cnt < intlen && !string_is_term(ptr) && *ptr != ':'; cnt++, ptr++) {
         buffer[cnt] = *ptr;

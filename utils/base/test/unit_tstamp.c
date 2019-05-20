@@ -22,12 +22,11 @@ MU_TEST(test_month_12)
     mu_assert_int_eq(1, result);
     mu_assert_int_eq(depth, timestamp_seq_size(&seq));
 
-    // Проверка для месячной последовательности может быть выполнена просто:
-    // индекс текона = № месяца - 1
-    // Соответсвенно, можно взять метку времени по индексу, преобразовать в
-    // локальное время и убедится, что номер месяца совпадает
-
-    // Кроме того, можно убедится, что даты, сгенерированные по индексу, дают нам тот же самый индекс
+    /* Проверка для месячной последовательности может быть выполнена просто:
+     * индекс текона = № месяца - 1
+     * Соответсвенно, можно взять метку времени по индексу, преобразовать в
+     * локальное время и убедится, что номер месяца совпадает
+     * Кроме того, можно убедится, что даты, сгенерированные по индексу, дают нам тот же самый индекс */
     size_t i;
     for(i = 0; i < timestamp_seq_size(&seq); i++) {
         struct tm ldt;
@@ -46,7 +45,7 @@ MU_TEST(test_month_48)
     mu_assert_int_eq(1, result);
     mu_assert_int_eq(depth, timestamp_seq_size(&seq));
 
-    // убедится, что даты, сгенерированные по индексу, дают нам тот же самый индекс
+    /* убедится, что даты, сгенерированные по индексу, дают нам тот же самый индекс */
     size_t i;
     for(i = 0; i < timestamp_seq_size(&seq); i++) {
         struct tm ldt;
@@ -57,10 +56,10 @@ MU_TEST(test_month_48)
 
 MU_TEST(test_month_cv)
 {
-    // Проверка контроьного значения. Индекс взят и время взяты из реального
-    // обмена.
-    // время начала архива: 2018/09/01 00:00:00
-    // время окончания архива: 2018/10/01 00:00:00
+    /* Проверка контроьного значения. Индекс взят и время взяты из реального
+     * обмена.
+     * время начала архива: 2018/09/01 00:00:00
+     * время окончания архива: 2018/10/01 00:00:00 */
     const size_t index = 0x08;
     struct timestamp_seq seq;
     struct tekon_date date = {.year = 18, .month = 10, .day = 1};
@@ -68,8 +67,8 @@ MU_TEST(test_month_cv)
     struct tm dt;
     memset(&dt, 0, sizeof(dt));
 
-    dt.tm_year = date.year + 100; //tm_year: год - 1900
-    dt.tm_mon = date.month - 2;   //tm_mon [0,11] + начало архива на 1 месяц раньше
+    dt.tm_year = date.year + 100; /*m_year: год - 1900*/
+    dt.tm_mon = date.month - 2;   /*tm_mon [0,11] + начало архива на 1 месяц раньше*/
     dt.tm_mday = date.day;
     dt.tm_hour = 0;
     dt.tm_min = 0;
@@ -89,7 +88,7 @@ MU_TEST(test_day_365)
     mu_assert_int_eq(1, result);
     mu_assert_int_eq(365, timestamp_seq_size(&seq));
 
-    // убедится, что даты, сгенерированные по индексу, дают нам тот же самый индекс
+    /* убедится, что даты, сгенерированные по индексу, дают нам тот же самый индекс */
     size_t i;
     for(i = 0; i < timestamp_seq_size(&seq); i++) {
         struct tm ldt;
@@ -108,7 +107,7 @@ MU_TEST(test_day_366)
     mu_assert_int_eq(1, result);
     mu_assert_int_eq(366, timestamp_seq_size(&seq));
 
-    // убедится, что даты, сгенерированные по индексу, дают нам тот же самый индекс
+    /* убедится, что даты, сгенерированные по индексу, дают нам тот же самый индекс */
     size_t i;
     for(i = 0; i < timestamp_seq_size(&seq); i++) {
         struct tm ldt;
@@ -125,7 +124,7 @@ MU_TEST(test_day_trans)
     mu_assert_int_eq(1, result);
     mu_assert_int_eq(365, timestamp_seq_size(&seq));
 
-    // убедится, что даты, сгенерированные по индексу, дают нам тот же самый индекс
+    /* убедится, что даты, сгенерированные по индексу, дают нам тот же самый индекс */
     size_t i;
     for(i = 0; i < timestamp_seq_size(&seq); i++) {
         struct tm ldt;
@@ -136,10 +135,10 @@ MU_TEST(test_day_trans)
 
 MU_TEST(test_day_cv)
 {
-    // Проверка контроьного значения. Индекс взят и время взяты из реального
-    // обмена.
-    // время начала архива: 2018/05/08 00:00:00
-    // время окончания архива: 2018/05/09 00:00:00
+    /* Проверка контроьного значения. Индекс взят и время взяты из реального
+     * обмена.
+     * время начала архива: 2018/05/08 00:00:00
+     * время окончания архива: 2018/05/09 00:00:00 */
     const size_t index = 0x7F;
     struct timestamp_seq seq;
     struct tekon_date date = {.year = 18, .month = 5, .day = 9};
@@ -147,9 +146,9 @@ MU_TEST(test_day_cv)
     struct tm dt;
     memset(&dt, 0, sizeof(dt));
 
-    dt.tm_year = date.year + 100; //tm_year: год - 1900
-    dt.tm_mon = date.month - 1;   //tm_mon [0,11]
-    dt.tm_mday = date.day - 1;    //начало архива на день раньше
+    dt.tm_year = date.year + 100; /*tm_year: год - 1900*/
+    dt.tm_mon = date.month - 1;   /*tm_mon [0,11]*/
+    dt.tm_mday = date.day - 1;    /*начало архива на день раньше*/
     dt.tm_hour = 0;
     dt.tm_min = 0;
     dt.tm_sec = 0;
@@ -171,7 +170,7 @@ MU_TEST(test_hour_16)
     mu_assert_int_eq(1, result);
     mu_assert_int_eq(depth, timestamp_seq_size(&seq));
 
-    // убедится, что даты, сгенерированные по индексу, дают нам тот же самый индекс
+    /* убедится, что даты, сгенерированные по индексу, дают нам тот же самый индекс */
     size_t i;
     for(i = 0; i < timestamp_seq_size(&seq); i++) {
         struct tm ldt;
@@ -192,7 +191,7 @@ MU_TEST(test_hour_32)
     mu_assert_int_eq(1, result);
     mu_assert_int_eq(depth, timestamp_seq_size(&seq));
 
-    // убедится, что даты, сгенерированные по индексу, дают нам тот же самый индекс
+    /* убедится, что даты, сгенерированные по индексу, дают нам тот же самый индекс */
     size_t i;
     for(i = 0; i < timestamp_seq_size(&seq); i++) {
         struct tm ldt;
@@ -213,23 +212,22 @@ MU_TEST(test_hour_64)
     mu_assert_int_eq(1, result);
     mu_assert_int_eq(depth, timestamp_seq_size(&seq));
 
-    // убедится, что даты, сгенерированные по индексу, дают нам тот же самый индекс
+    /* убедится, что даты, сгенерированные по индексу, дают нам тот же самый индекс */
     size_t i;
     for(i = 0; i < timestamp_seq_size(&seq); i++) {
         struct tm ldt;
         time_local_from_utc(timestamp_seq_get(&seq, i), &ldt);
         mu_assert_int_eq(i, tekon_hour_index(ldt.tm_year % 100, ldt.tm_mon + 1,
                                              ldt.tm_mday, ldt.tm_hour, depth));
-        //printf("%d %d\n", i, seq.time[i]);
     }
 }
 
 MU_TEST(test_hour_cv)
 {
-    // Проверка контроьного значения. Индекс взят и время взяты из реального
-    // обмена.
-    // время начала архива: 2019/03/05 14:00:00
-    // время окончания архива: 2019/03/05 15:00:00
+    /* Проверка контроьного значения. Индекс взят и время взяты из реального
+     * обмена.
+     * время начала архива: 2019/03/05 14:00:00
+     * время окончания архива: 2019/03/05 15:00:00 */
     const uint16_t depth = 1536;
     const size_t index = 0x296;
 
@@ -240,10 +238,10 @@ MU_TEST(test_hour_cv)
     struct tm dt;
     memset(&dt, 0, sizeof(dt));
 
-    dt.tm_year = date.year + 100; //tm_year: год - 1900
-    dt.tm_mon = date.month - 1;   //tm_mon [0,11]
+    dt.tm_year = date.year + 100; /*tm_year: год - 1900*/
+    dt.tm_mon = date.month - 1;   /*tm_mon [0,11]*/
     dt.tm_mday = date.day;
-    dt.tm_hour = time.hour - 1;   //начало архива на час раньше
+    dt.tm_hour = time.hour - 1;   /*начало архива на час раньше*/
     dt.tm_min = time.minute;
     dt.tm_sec = time.second;
 
@@ -265,26 +263,25 @@ MU_TEST(test_interval_5)
     mu_assert_int_eq(1, result);
     mu_assert_int_eq(depth, timestamp_seq_size(&seq));
 
-    // убедится, что даты, сгенерированные по индексу, дают нам тот же самый индекс
+    /* убедится, что даты, сгенерированные по индексу, дают нам тот же самый индекс */
     size_t i;
     for(i = 0; i < timestamp_seq_size(&seq); i++) {
         struct tm ldt;
         time_local_from_utc(timestamp_seq_get(&seq, i), &ldt);
         mu_assert_int_eq(i, tekon_interval_index(ldt.tm_year % 100, ldt.tm_mon + 1,
                          ldt.tm_mday, ldt.tm_hour, ldt.tm_min, depth, interval));
-        //printf("%d %d\n", i, seq.time[i]);
     }
 }
 
 MU_TEST(test_interval_cv)
 {
-    // Проверка контроьного значения. Индекс взят и время взяты из реального
-    // обмена.
-    // время начала архива: 2019/05/06 15:45:00
-    // время окончания архива: 2019/05/06 15:50:00
-    // В отличие от архивов остальных видов, считанные данные относятся к
-    // интервалу, который закончился в ЧЧ / ММ  (Т10.06.59РД-Д1)
-    // Т.е. контрольное время можно не сдвигать на начало архива
+    /* Проверка контроьного значения. Индекс взят и время взяты из реального
+     * обмена.
+     * время начала архива: 2019/05/06 15:45:00
+     * время окончания архива: 2019/05/06 15:50:00
+     * В отличие от архивов остальных видов, считанные данные относятся к
+     * интервалу, который закончился в ЧЧ / ММ  (Т10.06.59РД-Д1)
+     * Т.е. контрольное время можно не сдвигать на начало архива */
     const size_t index = 0xBD;
     const size_t depth = 1440;
     const size_t interval = 5;
@@ -295,8 +292,8 @@ MU_TEST(test_interval_cv)
     struct tm dt;
     memset(&dt, 0, sizeof(dt));
 
-    dt.tm_year = date.year + 100; //tm_year: год - 1900
-    dt.tm_mon = date.month - 1;   //tm_mon [0,11]
+    dt.tm_year = date.year + 100; /*tm_year: год - 1900*/
+    dt.tm_mon = date.month - 1;   /*tm_mon [0,11]*/
     dt.tm_mday = date.day;
     dt.tm_hour = time.hour;
     dt.tm_min = time.minute;

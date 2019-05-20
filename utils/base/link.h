@@ -13,13 +13,13 @@ extern "C" {
 #include <stdint.h>
 
 #if defined(__unix__) || defined(__linux__)
-// UNIX or LINUX
+/* UNIX or LINUX */
 #include <sys/types.h>
 #include <sys/socket.h>
 #define TEKON_INVALID_SOCKET (-1)
 typedef int socket_t;
 #elif defined(_WIN32) || defined(WIN32)
-// WINDOWS
+/* WINDOWS */
 #include <windows.h>
 typedef SOCKET socket_t;
 #define TEKON_INVALID_SOCKET (INVALID_SOCKET)
