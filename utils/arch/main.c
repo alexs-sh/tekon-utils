@@ -240,7 +240,7 @@ static int read_archive(struct app * app)
  * либо архив + время начала/окончания из Тэкона. В дальнейшем это время можно
  * использовать для перевода индексов в метки времени
  */
-static int read(struct app * app)
+static int read_data(struct app * app)
 {
     /* создать подключение */
     if(app->netcfg.type == LINK_TCP)
@@ -562,7 +562,7 @@ int main(int argc, char * argv[])
         return 1;
 
     /* Прочитать данные из утсройства */
-    int result = read(&app);
+    int result = read_data(&app);
 
     /* Перевести индексы в метки времени */
     archive_index_to_utc(&app.archive, &app.begin_at, &app.end_at);

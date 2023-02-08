@@ -171,7 +171,7 @@ static int read_multiple(struct msr * msr, size_t size, struct link * link)
 
 /* Прочитать данные из устройства
  * 0 - в случае ошибки */
-static int read(struct app * app)
+static int read_data(struct app * app)
 {
     assert(app);
     struct msr_table * table = &app->table;
@@ -418,7 +418,7 @@ int main(int argc, char * argv[])
         return 1;
     }
 
-    int result = read(&app);
+    int result = read_data(&app);
     msr_table_foreach(&app.table, print, &app);
     return result == 0;
 

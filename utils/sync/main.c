@@ -256,7 +256,7 @@ static int write_time(struct link * link, const struct dtaddr * addr, const stru
 /* Функция, управляющая записью времени в устройство.
  * Выполняет запись + подготовительные/завершающие шаги
  * 0 - в случае ошибки */
-static int sync(struct app * app)
+static int sync_time(struct app * app)
 {
     assert(app);
     struct link * link = &app->link;
@@ -454,7 +454,7 @@ int main(int argc, char * argv[])
         return 1;
     }
 
-    int result = sync(&app);
+    int result = sync_time(&app);
     return result == 0;
 }
 
